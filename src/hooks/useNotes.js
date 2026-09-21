@@ -8,6 +8,15 @@ const NOTE_HEIGHT = 180;
 const BOARD_WIDTH = 1200;
 const BOARD_HEIGHT = 800;
 
+const getResponsiveNoteSize = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+
+  return {
+    width: isMobile ? 180 : NOTE_WIDTH,
+    height: isMobile ? 120 : NOTE_HEIGHT,
+  };
+};
+
 const cloneDefaultNotes = () =>
   defaultNotes.map((note) => ({
     ...note,
@@ -24,6 +33,9 @@ export function useNotes() {
 
   const addNote = () => {
     const nextIndex = notes.length + 1;
+    const { width, height } = getResponsiveNoteSize();
+    const boardWidth = typeof window !== 'undefined' && window.innerWidth <= 640 ? Math.max(window.innerWidth - 24, 280) : BOARD_WIDTH;
+    const boardHeight = typeof window !== 'undefined' && window.innerHeight <= 900 ? Math.max(window.innerHeight - 220, 420) : BOARD_HEIGHT;
     const newNote = {
       id: `note-${Date.now()}-${nextIndex}`,
       text: 'New sticky note...',
@@ -32,10 +44,10 @@ export function useNotes() {
           x: 70 + (notes.length % 4) * 90,
           y: 70 + (notes.length % 3) * 90,
         },
-        NOTE_WIDTH,
-        NOTE_HEIGHT,
-        BOARD_WIDTH,
-        BOARD_HEIGHT,
+        width,
+        height,
+        boardWidth,
+        boardHeight,
       ),
       colors: {
         header: '#B7E4C7',
@@ -54,8 +66,12 @@ export function useNotes() {
           return note;
         }
 
+        const { width, height } = getResponsiveNoteSize();
+        const boardWidth = typeof window !== 'undefined' && window.innerWidth <= 640 ? Math.max(window.innerWidth - 24, 280) : BOARD_WIDTH;
+        const boardHeight = typeof window !== 'undefined' && window.innerHeight <= 900 ? Math.max(window.innerHeight - 220, 420) : BOARD_HEIGHT;
+
         const nextPosition = updates.position
-          ? clampNotePosition(updates.position, NOTE_WIDTH, NOTE_HEIGHT, BOARD_WIDTH, BOARD_HEIGHT)
+          ? clampNotePosition(updates.position, width, height, boardWidth, boardHeight)
           : note.position;
 
         return {

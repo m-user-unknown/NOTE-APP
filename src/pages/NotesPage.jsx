@@ -4,10 +4,25 @@ import { useNotes } from "../hooks/useNotes";
 
 const DEFAULT_BOARD_SIZE = { width: 1200, height: 800 };
 
+function getResponsiveBoardSize(width, height) {
+  const isMobile = window.innerWidth <= 640;
+
+  return {
+    width: Math.max(width, isMobile ? 280 : 500),
+    height: Math.max(height, isMobile ? 420 : 500),
+  };
+}
+
 function NotesPage() {
   const { notes, addNote, updateNote, deleteNote, resetNotes } = useNotes();
   const boardRef = useRef(null);
-  const [boardSize, setBoardSize] = useState(DEFAULT_BOARD_SIZE);
+  const [boardSize, setBoardSize] = useState(() => {
+    const { innerWidth } = window;
+    return getResponsiveBoardSize(
+      innerWidth < 640 ? innerWidth - 24 : DEFAULT_BOARD_SIZE.width,
+      DEFAULT_BOARD_SIZE.height,
+    );
+  });
 
   useEffect(() => {
     const updateBoardSize = () => {
@@ -16,10 +31,7 @@ function NotesPage() {
       }
 
       const { width, height } = boardRef.current.getBoundingClientRect();
-      setBoardSize({
-        width: Math.max(width, 500),
-        height: Math.max(height, 500),
-      });
+      setBoardSize(getResponsiveBoardSize(width, height));
     };
 
     updateBoardSize();
