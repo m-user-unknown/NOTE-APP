@@ -1,13 +1,11 @@
-import Notespage from './pages/NotesPage'
-// import LandPage from './pages/LandPage'
-function App() {  
+import NotesPage from "./pages/NotesPage";
+
+function App() {
   return (
     <div id="app">
-      <div id="bg">
-        <Notespage />
-      </div>      
+      <NotesPage />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
